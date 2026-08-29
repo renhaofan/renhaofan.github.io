@@ -1,15 +1,17 @@
 <!-- Copyright: https://pengsida.net/ -->
 
 <!doctype html>
-<html>
+<html lang="en">
 
 <head>
   <title>Haofan Ren</title>
 
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-  <meta name="keywords" content="Liang Pan, The University of Hong Kong">
-  <meta name="description" content="Liang Pan's homepage">
-  <link rel="stylesheet" href="css/jemdoc.css" type="text/css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="keywords" content="Haofan Ren, 3D Reconstruction, 3D Gaussian Splatting">
+  <meta name="description" content="Haofan Ren's homepage and paper reading notes">
+  <link rel="stylesheet" href="css/jemdoc.css?v=20260830-1" type="text/css" />
+  <link rel="stylesheet" href="css/papers.css?v=20260830-2" type="text/css" />
 
   <script>
     (function (i, s, o, g, r, a, m) {
@@ -41,45 +43,38 @@
     }
   </script>
 
+  <!-- 鼠标悬停显示图片 -->
+  <style>
+    .hover-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .hover-image {
+      display: none;
+      position: absolute;
+      bottom: 100%;
+      left: 125%;
+      transform: translateX(-50%);
+      z-index: 999;
+      width: 200px;
+      border: 2px solid #ccc;
+    }
+
+    .hover-trigger:hover+.hover-image {
+      display: block;
+    }
   </style>
-
-</head>
-
-</head>
-
-<!-- 鼠标悬停显示图片 -->
-<style>
-  /* 容器样式 */
-  .hover-container {
-    position: relative;
-    display: inline-block;
-  }
-
-  /* 默认隐藏图片 */
-  .hover-image {
-    display: none;
-    position: absolute;
-    bottom: 100%;
-    /* 图片显示在悬停元素上方 */
-    left: 125%;
-    transform: translateX(-50%);
-    z-index: 999;
-    width: 200px;
-    /* 自定义图片宽度 */
-    border: 2px solid #ccc;
-  }
-
-  /* 悬停时显示图片 */
-  .hover-trigger:hover+.hover-image {
-    display: block;
-  }
-</style>
-
 </head>
 
 <body>
 
   <div id="layout-content" style="margin-top:25px">
+
+    <nav class="site-nav" aria-label="Main navigation">
+      <a class="current" href="/">Home</a>
+      <a href="/papers/">Paper Notes</a>
+    </nav>
 
 
     <table>
@@ -87,7 +82,7 @@
         <tr>
           <td width="75%">
             <div id="toptitle">
-              <h1>Haofan Ren(任浩帆)<h1>
+              <h1>Haofan Ren(任浩帆)</h1>
             </div>
 
             <h3 class="title">Building spatial intelligence with 3D reconstruction</h3>
@@ -255,8 +250,6 @@
       </div>
     </div>
 
-
-  </div>
 
   </div>
 </body>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page.title }} | Paper Notes | {{ site.title }}</title>
+  <meta name="description" content="{{ page.summary | default: page.title | strip_html | escape }}">
+  <link rel="stylesheet" href="{{ '/css/jemdoc.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/css/papers.css' | relative_url }}?v=20260830-2">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body class="paper-body">
+  <main id="layout-content" class="paper-layout">
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="{{ '/' | relative_url }}">Home</a>
+      <a class="current" href="{{ '/papers/' | relative_url }}">Paper Notes</a>
+    </nav>
+
+    <article class="paper-note">
+      <header class="paper-header">
+        <a class="back-link" href="{{ '/papers/' | relative_url }}">← 返回论文列表</a>
+        <h1>{{ page.title }}</h1>
+        {% if page.subtitle %}<p class="paper-subtitle">{{ page.subtitle }}</p>{% endif %}
+
+        <dl class="paper-meta">
+          {% if page.authors %}
+          <div><dt>作者</dt><dd>{{ page.authors }}</dd></div>
+          {% endif %}
+          {% if page.venue or page.year %}
+          <div><dt>会议 / 年份</dt><dd>{{ page.venue }}{% if page.venue and page.year %} · {% endif %}{{ page.year }}</dd></div>
+          {% endif %}
+          {% if page.date %}
+          <div><dt>笔记日期</dt><dd>{{ page.date | date: "%Y-%m-%d" }}</dd></div>
+          {% endif %}
+          {% if page.paper_url or page.code_url or page.project_url %}
+          <div>
+            <dt>相关链接</dt>
+            <dd class="paper-links">
+              {% if page.paper_url %}<a href="{{ page.paper_url }}" target="_blank" rel="noopener">论文</a>{% endif %}
+              {% if page.code_url %}<a href="{{ page.code_url }}" target="_blank" rel="noopener">代码</a>{% endif %}
+              {% if page.project_url %}<a href="{{ page.project_url }}" target="_blank" rel="noopener">项目页</a>{% endif %}
+            </dd>
+          </div>
+          {% endif %}
+        </dl>
+
+        {% if page.tags %}
+        <div class="tag-list" aria-label="标签">
+          {% for tag in page.tags %}<span class="paper-tag">{{ tag }}</span>{% endfor %}
+        </div>
+        {% endif %}
+      </header>
+
+      {% if page.summary %}
+      <aside class="summary-card">
+        <span>一句话总结</span>
+        <p>{{ page.summary }}</p>
+      </aside>
+      {% endif %}
+
+      <div class="paper-content">
+        {{ content }}
+      </div>
+    </article>
+
+    <footer class="paper-footer">
+      <a href="{{ '/papers/' | relative_url }}">继续阅读其他论文笔记</a>
+    </footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,24 @@
+title: Haofan Ren
+description: Haofan Ren's homepage and paper reading notes
+url: https://renhaofan.github.io
+baseurl: ""
+
+markdown: kramdown
+kramdown:
+  input: GFM
+
+collections:
+  papers:
+    output: true
+    permalink: /papers/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: papers
+    values:
+      layout: paper
+
+exclude:
+  - README.md
+  - PAPER_WORKFLOW.md

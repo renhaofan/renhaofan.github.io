@@ -1,0 +1,86 @@
+---
+layout: null
+title: 论文阅读
+permalink: /papers/
+---
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>论文阅读 | {{ site.title }}</title>
+  <meta name="description" content="关于 3D 重建、3D Gaussian Splatting 与空间智能的论文精读笔记。">
+  <link rel="stylesheet" href="{{ '/css/jemdoc.css' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/css/papers.css' | relative_url }}?v=20260830-2">
+</head>
+<body class="paper-body">
+  <main id="layout-content" class="papers-index">
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="{{ '/' | relative_url }}">Home</a>
+      <a class="current" href="{{ '/papers/' | relative_url }}">Paper Notes</a>
+    </nav>
+
+    <header class="papers-hero">
+      <p class="eyebrow">PAPER NOTES</p>
+      <h1>论文阅读</h1>
+      <p>记录值得深入理解的研究工作：从问题与方法，到关键实验、局限和可迁移的启发。</p>
+    </header>
+
+    {% assign sorted_papers = site.papers | sort: 'date' | reverse %}
+    {% if sorted_papers.size > 0 %}
+    <section class="paper-tools" aria-label="论文筛选">
+      <label for="paper-search">搜索笔记</label>
+      <input id="paper-search" type="search" placeholder="标题、作者、会议或标签…" autocomplete="off">
+      <span id="paper-count">共 {{ sorted_papers.size }} 篇</span>
+    </section>
+
+    <section class="paper-grid" id="paper-grid">
+      {% for paper in sorted_papers %}
+      <article class="paper-card" data-search="{{ paper.title | append: ' ' | append: paper.authors | append: ' ' | append: paper.venue | append: ' ' | append: paper.tags | downcase | escape }}">
+        <div class="paper-card-topline">
+          <span>{{ paper.venue | default: 'Paper' }}{% if paper.year %} · {{ paper.year }}{% endif %}</span>
+          {% if paper.date %}<time datetime="{{ paper.date | date_to_xmlschema }}">{{ paper.date | date: "%Y-%m-%d" }}</time>{% endif %}
+        </div>
+        <h2><a href="{{ paper.url | relative_url }}">{{ paper.title }}</a></h2>
+        {% if paper.authors %}<p class="paper-authors">{{ paper.authors }}</p>{% endif %}
+        {% if paper.summary %}<p class="paper-card-summary">{{ paper.summary }}</p>{% endif %}
+        {% if paper.tags %}
+        <div class="tag-list">
+          {% for tag in paper.tags %}<span class="paper-tag">{{ tag }}</span>{% endfor %}
+        </div>
+        {% endif %}
+        <a class="read-note" href="{{ paper.url | relative_url }}">阅读笔记 →</a>
+      </article>
+      {% endfor %}
+    </section>
+    <p id="paper-empty-search" class="empty-state" hidden>没有找到匹配的论文笔记。</p>
+    {% else %}
+    <section class="empty-state">
+      <h2>第一篇笔记正在路上</h2>
+      <p>论文精读笔记发布后会自动出现在这里。</p>
+    </section>
+    {% endif %}
+  </main>
+
+  <script>
+    const search = document.getElementById('paper-search');
+    if (search) {
+      const cards = Array.from(document.querySelectorAll('.paper-card'));
+      const count = document.getElementById('paper-count');
+      const empty = document.getElementById('paper-empty-search');
+
+      search.addEventListener('input', function () {
+        const keyword = search.value.trim().toLocaleLowerCase();
+        let visible = 0;
+        cards.forEach(function (card) {
+          const matched = !keyword || card.dataset.search.includes(keyword);
+          card.hidden = !matched;
+          if (matched) visible += 1;
+        });
+        count.textContent = '显示 ' + visible + ' / ' + cards.length + ' 篇';
+        empty.hidden = visible !== 0;
+      });
+    }
+  </script>
+</body>
+</html>

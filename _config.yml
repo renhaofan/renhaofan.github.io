@@ -2,6 +2,7 @@ title: Haofan Ren
 description: Haofan Ren's homepage and paper reading notes
 url: https://renhaofan.github.io
 baseurl: ""
+future: true
 
 markdown: kramdown
 kramdown:

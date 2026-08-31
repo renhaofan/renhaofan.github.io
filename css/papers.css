@@ -370,3 +370,12 @@
     gap: 3px;
   }
 }
+.paper-content .mermaid {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  overflow-x: auto;
+  border: 1px solid #dde3ea;
+  border-radius: 10px;
+  background: #fbfcfe;
+  text-align: center;
+}

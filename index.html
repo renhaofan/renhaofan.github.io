@@ -11,7 +11,7 @@
   <meta name="keywords" content="Haofan Ren, 3D Reconstruction, 3D Gaussian Splatting">
   <meta name="description" content="Haofan Ren's homepage and paper reading notes">
   <link rel="stylesheet" href="css/jemdoc.css?v=20260830-1" type="text/css" />
-  <link rel="stylesheet" href="css/papers.css?v=20260830-2" type="text/css" />
+  <link rel="stylesheet" href="css/papers.css?v=20260905-1" type="text/css" />
 
   <script>
     (function (i, s, o, g, r, a, m) {
@@ -72,8 +72,9 @@
   <div id="layout-content" style="margin-top:25px">
 
     <nav class="site-nav" aria-label="Main navigation">
-      <a class="current" href="/">Home</a>
-      <a href="/papers/">Paper Notes</a>
+      <a class="current" href="/" data-en="Home" data-zh="首页">Home</a>
+      <a href="/papers/" data-en="Paper Notes" data-zh="论文笔记">Paper Notes</a>
+      <button class="language-switch" id="language-switch" type="button" aria-label="切换为中文" title="切换为中文">中文</button>
     </nav>
 
 
@@ -85,14 +86,14 @@
               <h1>Haofan Ren(任浩帆)</h1>
             </div>
 
-            <h3 class="title">Building spatial intelligence with 3D reconstruction</h3>
+            <h3 class="title" data-en="Building spatial intelligence with 3D reconstruction" data-zh="以三维重建构建空间智能">Building spatial intelligence with 3D reconstruction</h3>
 
             <p>
-              3D Reconstruction engineer at <a href="https://www.xgrids.com" target="_blank">XGRIDS</a></br>
+              <span data-en="3D Reconstruction Engineer at" data-zh="三维重建工程师，就职于">3D Reconstruction Engineer at</span> <a href="https://www.xgrids.com" target="_blank">XGRIDS</a></br>
 
             <div class="hover-container">
-              Email: <a href="mailto:yqykrhf@163.com">yqykrhf@163.com</a> <b>|</b>
-              <span class="hover-trigger">WeChat QR code: Move mouse here</span>
+              <span data-en="Email:" data-zh="邮箱：">Email:</span> <a href="mailto:yqykrhf@163.com">yqykrhf@163.com</a> <b>|</b>
+              <span class="hover-trigger" data-en="WeChat QR code: Move mouse here" data-zh="微信二维码：鼠标悬停查看">WeChat QR code: Move mouse here</span>
               <img src="images/wechat_QRcode.jpg" class="hover-image" alt="提示图片">
             </div> </br>
 
@@ -109,22 +110,26 @@
       </tbody>
     </table>
 
-    <h2>Biography</h2>
+    <h2 data-en="Biography" data-zh="个人简介">Biography</h2>
 
     <div style="display: flex">
-      <p>
+      <p class="language-content language-content-en">
         I am an engineer at <a href="https://www.xgrids.com" target="_blank">XGRIDS</a>, mainly responsible for 3D
-        reconstruction, especially work related to 3D Gaussian Splatting (3DGS).
+        reconstruction.
         Before that, I received my bachelor's and master's degrees from <a href="http://iipl.net.cn/"
           target="_blank">IIPL Lab</a> of Hangzhou Dianzi University,
         supervised by Prof. <a href="http://iipl.net.cn/" target="_blank">Chenggang Yan</a> from HDU and <a
           href="https://lu-m13.github.io/" target="_blank">Ming Lu</a> from Intel Labs China.
       </p>
+      <p class="language-content language-content-zh" hidden>
+        我目前在 <a href="https://www.xgrids.com" target="_blank">XGRIDS</a> 担任工程师，主要负责三维重建。
+        此前，我在杭州电子科技大学 <a href="http://iipl.net.cn/" target="_blank">IIPL 实验室</a>获得学士和硕士学位，师从杭电<a href="http://iipl.net.cn/" target="_blank">颜成钢教授</a>和英特尔中国研究院<a href="https://lu-m13.github.io/" target="_blank">陆鸣老师</a>。
+      </p>
     </div>
 
-    <h2>News</h2>
+    <h2 data-en="News" data-zh="动态">News</h2>
 
-    <ul>
+    <ul id="news-list">
       <li>
         <div>
           [2026/08] ✨Excited to share our new work <a href="https://arxiv.org/abs/2608.18413" target="_blank">CoMVS-GS</a> on collaborative MVS and 3D Gaussian splatting for surface reconstruction!
@@ -155,7 +160,7 @@
 
 
     <h2>
-      Research
+      <span data-en="Research" data-zh="研究成果">Research</span>
       <!-- <span style="font-size: 65%;">(* denotes equal contribution, and <span class="corresponding">†</span> denotes the corresponding author)</span> -->
     </h2>
 
@@ -252,6 +257,62 @@
 
 
   </div>
+  <script>
+    (function () {
+      var storageKey = 'preferred-language';
+      var switchButton = document.getElementById('language-switch');
+
+      function setLanguage(language) {
+        var isChinese = language === 'zh';
+        var newsList = document.getElementById('news-list');
+        document.documentElement.lang = isChinese ? 'zh-CN' : 'en';
+
+        document.querySelectorAll('[data-en][data-zh]').forEach(function (element) {
+          element.textContent = element.getAttribute(isChinese ? 'data-zh' : 'data-en');
+        });
+        document.querySelectorAll('.language-content-en').forEach(function (element) {
+          element.hidden = isChinese;
+        });
+        document.querySelectorAll('.language-content-zh').forEach(function (element) {
+          element.hidden = !isChinese;
+        });
+
+        newsList.innerHTML = (isChinese ? [
+          '<li><div>[2026/08] 很高兴分享我们的新工作 <a href="https://arxiv.org/abs/2608.18413" target="_blank">CoMVS-GS</a>：面向表面重建的协同多视图立体与三维高斯泼溅！</div></li>',
+          '<li><div>[2026/05] 很高兴我们的工作 <a href="https://www.sciencedirect.com/science/article/abs/pii/S0925231226013780" target="_blank">AND-GS</a> 已被 Neurocomputing 接收！</div></li>',
+          '<li><div>[2026/04] 很高兴我们的工作 <a href="#">ThermalGaussian++</a> 已被 TPAMI 正式接收！</div></li>',
+          '<li><div>[2025/09] 很高兴宣布，我参与研发的空间相机 <a href="https://xgrids.com/portalcam/intl" target="_blank">Portal Cam</a> 已正式发布！</div></li>'
+        ] : [
+          '<li><div>[2026/08] Excited to share our new work <a href="https://arxiv.org/abs/2608.18413" target="_blank">CoMVS-GS</a> on collaborative MVS and 3D Gaussian splatting for surface reconstruction!</div></li>',
+          '<li><div>[2026/05] Thrilled to share that <a href="https://www.sciencedirect.com/science/article/abs/pii/S0925231226013780" target="_blank">AND-GS</a> has been accepted by Neurocomputing!</div></li>',
+          '<li><div>[2026/04] Thrilled to share that <a href="#">ThermalGaussian++</a> has been officially accepted by TPAMI!</div></li>',
+          '<li><div>[2025/09] Excited to announce that <a href="https://xgrids.com/portalcam/intl" target="_blank">Portal Cam</a>, the spatial camera I helped develop, is now live!</div></li>'
+        ]).join('');
+
+        switchButton.textContent = isChinese ? 'EN' : '中文';
+        switchButton.setAttribute('aria-label', isChinese ? 'Switch to English' : '切换为中文');
+        switchButton.setAttribute('title', isChinese ? 'Switch to English' : '切换为中文');
+      }
+
+      var savedLanguage;
+      try {
+        savedLanguage = localStorage.getItem(storageKey);
+      } catch (error) {
+        savedLanguage = null;
+      }
+      setLanguage(savedLanguage === 'zh' ? 'zh' : 'en');
+
+      switchButton.addEventListener('click', function () {
+        var language = document.documentElement.lang === 'zh-CN' ? 'en' : 'zh';
+        setLanguage(language);
+        try {
+          localStorage.setItem(storageKey, language);
+        } catch (error) {
+          // The switch still works when storage is unavailable.
+        }
+      });
+    })();
+  </script>
 </body>
 
 </html>

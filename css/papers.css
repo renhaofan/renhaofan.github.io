@@ -35,6 +35,26 @@
   border-bottom-color: var(--paper-accent);
 }
 
+.language-switch {
+  margin-left: auto;
+  padding: 5px 11px;
+  border: 1px solid var(--paper-line);
+  border-radius: 999px;
+  color: var(--paper-accent);
+  background: #fff;
+  font: inherit;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: border-color .2s ease, background-color .2s ease;
+}
+
+.language-switch:hover,
+.language-switch:focus-visible {
+  border-color: var(--paper-accent);
+  background: var(--paper-accent-soft);
+  outline: none;
+}
+
 .papers-hero {
   max-width: 720px;
   margin: 56px 0 52px;

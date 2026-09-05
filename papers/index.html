@@ -11,7 +11,7 @@ permalink: /papers/
   <title>论文阅读 | {{ site.title }}</title>
   <meta name="description" content="关于 3D 重建、3D Gaussian Splatting 与空间智能的论文精读笔记。">
   <link rel="stylesheet" href="{{ '/css/jemdoc.css' | relative_url }}">
-  <link rel="stylesheet" href="{{ '/css/papers.css' | relative_url }}?v=20260830-2">
+  <link rel="stylesheet" href="{{ '/css/papers.css' | relative_url }}?v=20260906-2">
 </head>
 <body class="paper-body">
   <main id="layout-content" class="papers-index">
@@ -49,7 +49,7 @@ permalink: /papers/
           {% for tag in paper.tags %}<span class="paper-tag">{{ tag }}</span>{% endfor %}
         </div>
         {% endif %}
-        <a class="read-note" href="{{ paper.url | relative_url }}">阅读笔记 →</a>
+        <span class="read-note" aria-hidden="true">阅读笔记 →</span>
       </article>
       {% endfor %}
     </section>

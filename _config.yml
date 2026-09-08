@@ -3,6 +3,7 @@ description: Haofan Ren's homepage and paper reading notes
 url: https://renhaofan.github.io
 baseurl: ""
 future: true
+port: 4100
 
 markdown: kramdown
 kramdown:

@@ -24,7 +24,7 @@ Patch Comparison Gaussian Splatting（PCGS）不再只依赖 per-Gaussian 的 vi
 
 ## 背景与核心问题
 
-3DGS 每隔若干 iteration 累积各 Gaussian 的 screen/view-space positional gradient；超过阈值才 clone 或 split。该规则在高纹理、低覆盖或大 Gaussian 主导的区域会失效：一个大 splat 覆盖许多 pixel，却可能因 photometric loss 对局部 blur 不敏感而梯度不足，始终达不到 split threshold。直接下调阈值也不是答案：Mip-NeRF360 上从 \(2\times10^{-4}\) 降至 \(1\times10^{-4}\)，PSNR 仅从 27.21 到 27.34 dB、SSIM 从 0.815 到 0.821，Gaussian 数却由 3.18M 升至 8.94M；\(5\times10^{-5}\) 直接 OOM。
+3DGS 每隔若干 iteration 累积各 Gaussian 的 screen/view-space positional gradient；超过阈值才 clone 或 split。该规则在高纹理、低覆盖或大 Gaussian 主导的区域会失效：一个大 splat 覆盖许多 pixel，却可能因 photometric loss 对局部 blur 不敏感而梯度不足，始终达不到 split threshold。直接下调阈值也不是答案：Mip-NeRF360 上从 $2\times10^{-4}$ 降至 $1\times10^{-4}$，PSNR 仅从 27.21 到 27.34 dB、SSIM 从 0.815 到 0.821，Gaussian 数却由 3.18M 升至 8.94M；$5\times10^{-5}$ 直接 OOM。
 
 作者的切入点是：blur/artifact 往往是空间连续区域，不应只由孤立 pixel 的梯度决定。问题变为：**如何把 image-level 的“哪里重建坏了”可靠地映射到少量应 densify 的 3D Gaussians，同时不让点数失控？**
 
@@ -51,50 +51,50 @@ flowchart LR
 
 ### 1. Patch comparison：从误差区域反查主导 Gaussian
 
-对 pixel \(p\) 的颜色合成，3DGS 使用深度排序 alpha compositing：
+对 pixel $p$ 的颜色合成，3DGS 使用深度排序 alpha compositing：
 
-\[
+$$
 C(p)=\sum_i c_i\alpha_i\prod_{j<i}(1-\alpha_j).
-\]
+$$
 
-其中第 \(i\) 个 Gaussian 的实际贡献权重为
+其中第 $i$ 个 Gaussian 的实际贡献权重为
 
-\[
+$$
 \omega_i(p)=\alpha_i(p)\prod_{j<i}(1-\alpha_j(p)).
-\]
+$$
 
-PCGS 先计算 rendered image 与 GT 的 pixel loss map，以 Otsu 自动阈值 \(\tau\) 将显著误差标为 error pixels；随后将图像切成 patches，计算每个 patch 的 error-pixel ratio，并对这些 ratio 再跑一次 Otsu 得到 \(\epsilon\)，选出 error patches。使用两层自适应阈值避免按场景手调绝对 loss 或 patch sensitivity。
+PCGS 先计算 rendered image 与 GT 的 pixel loss map，以 Otsu 自动阈值 $\tau$ 将显著误差标为 error pixels；随后将图像切成 patches，计算每个 patch 的 error-pixel ratio，并对这些 ratio 再跑一次 Otsu 得到 $\epsilon$，选出 error patches。使用两层自适应阈值避免按场景手调绝对 loss 或 patch sensitivity。
 
 对于每个 error patch 内的 pixel，不取固定 Top-K，而只加入其最大贡献者：
 
-\[
+$$
 G_{\mathrm{select}}(p)=\arg\max_i\omega_i(p).
-\]
+$$
 
 它与原始 gradient 选中的 Gaussians 合并为候选集。论文的关键工程细节是：clone 后按比例降低 opacity，使子 Gaussian 的总贡献与原 primitive 对齐；最主导者被拆开、单个权重下降后，原先被遮蔽的次要贡献者会在后续 densification step 逐渐成为最大贡献者。作者以此将一次性的 Top-K 选择改成自演化的逐个 refinement，免去 K 的手调。
 
 ### 2. Growth control：预算限制与重要性采样
 
-error patch 会带来额外 densification，硬性限定最终点数又会过早耗尽额度。PCGS 在 densification 开始/结束 iteration \(I_s,I_f\) 之间采用对数增长预算：
+error patch 会带来额外 densification，硬性限定最终点数又会过早耗尽额度。PCGS 在 densification 开始/结束 iteration $I_s,I_f$ 之间采用对数增长预算：
 
-\[
+$$
 A(t)=S+(B-S)\frac{\log(1+kt)}{\log(1+k)},
 \quad t=\frac{I-I_s}{I_f-I_s},\quad k=9.
-\]
+$$
 
-\(S\) 是 SfM 初始点数，\(B\) 是最终 budget。该曲线前期增长快，给 geometry 足够的 clone/split 探索；后期变慢，将优化重心转到既有 Gaussian 的属性细化。
+$S$ 是 SfM 初始点数，$B$ 是最终 budget。该曲线前期增长快，给 geometry 足够的 clone/split 探索；后期变慢，将优化重心转到既有 Gaussian 的属性细化。
 
-当候选多于当前 step 能增加的配额时，PCGS 用 edge map 来表示结构显著性。对 Gaussian \(i\)，将它影响的 pixel 集合 \(P_i\) 的 edge 值累加：
+当候选多于当前 step 能增加的配额时，PCGS 用 edge map 来表示结构显著性。对 Gaussian $i$，将它影响的 pixel 集合 $P_i$ 的 edge 值累加：
 
-\[
+$$
 e_i=\sum_{p\in P_i}e_{\mathrm{pix}}(p).
-\]
+$$
 
-高 \(e_i\) 的候选优先 densify。它不是额外的监督 loss，而是预算下的选择分数；训练损失仍为原始 3DGS 的 \((1-\lambda)L_1+\lambda L_{SSIM}\)。
+高 $e_i$ 的候选优先 densify。它不是额外的监督 loss，而是预算下的选择分数；训练损失仍为原始 3DGS 的 $(1-\lambda)L_1+\lambda L_{SSIM}$。
 
 ### 实现与协议
 
-patch size 为 \(16\times16\)，最终 budget \(B\) 取原始 3DGS 的最终点数，代码基于 Taming-GS 并扩展 CUDA rasterizer 以输出每 pixel 最大贡献 Gaussian index。实验遵循 3DGS：Mip-NeRF360 9 scenes、Tanks&Temples 2 scenes、Deep Blending 2 scenes；每第 8 张图为 test，A6000 GPU，Adam。论文还重新运行多个 baseline，统一 Mip-NeRF360 的 9 scenes 与 ImageMagick 预下采样协议；因此不要把其数字与原论文的 PIL resize 结果直接混比。
+patch size 为 $16\times16$，最终 budget $B$ 取原始 3DGS 的最终点数，代码基于 Taming-GS 并扩展 CUDA rasterizer 以输出每 pixel 最大贡献 Gaussian index。实验遵循 3DGS：Mip-NeRF360 9 scenes、Tanks&Temples 2 scenes、Deep Blending 2 scenes；每第 8 张图为 test，A6000 GPU，Adam。论文还重新运行多个 baseline，统一 Mip-NeRF360 的 9 scenes 与 ImageMagick 预下采样协议；因此不要把其数字与原论文的 PIL resize 结果直接混比。
 
 ## 实验证据
 
@@ -140,7 +140,7 @@ Patch comparison 是最大单项贡献（相对移除后 +0.22 dB、LPIPS -0.022
 
 **独立分析**：
 
-- error patch 仍由 GT training image 定义，可能把曝光变化、反射或不一致标定当作 geometry 欠拟合；单视图最大 \(\omega_i\) 也不保证该 Gaussian 在其他视角同样是问题源。
+- error patch 仍由 GT training image 定义，可能把曝光变化、反射或不一致标定当作 geometry 欠拟合；单视图最大 $\omega_i$ 也不保证该 Gaussian 在其他视角同样是问题源。
 - 选择“最大贡献者”会偏向大且高 alpha 的 splat；opacity proportional reduction 虽有助于 unmasking，但论文未消融该操作，尚不能区分收益来自 patch mapping 还是 opacity 调度。
 - edge score 有利于高频细节，却可能在平坦但有低频 blur 的区域低估重要性；可尝试结合 patch loss magnitude、uncertainty 或多视图一致性。
 - runtime/点数比较混入了 Taming-GS 的底座和不同实现；论文未报告相同 Taming-GS codebase 下仅开关 PCGS 的 wall-clock profiling、render FPS、峰值 VRAM 与多 seed 方差。

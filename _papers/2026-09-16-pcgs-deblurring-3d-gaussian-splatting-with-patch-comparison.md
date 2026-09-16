@@ -32,7 +32,7 @@ Patch Comparison Gaussian Splatting（PCGS）不再只依赖 per-Gaussian 的 vi
 
 ### 整体框架
 
-```mermaid
+<div class="mermaid">
 flowchart LR
     A[SfM 初始化 Gaussians] --> B[标准 3DGS 可微渲染]
     B --> C[rendered image 与 GT]
@@ -47,7 +47,7 @@ flowchart LR
     J --> K[按对数增长 budget 采样]
     K --> L[clone / split densification]
     L --> B
-```
+</div>
 
 ### 1. Patch comparison：从误差区域反查主导 Gaussian
 

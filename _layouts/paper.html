@@ -6,7 +6,7 @@
   <title>{{ page.title }} | Paper Notes | {{ site.title }}</title>
   <meta name="description" content="{{ page.summary | default: page.title | strip_html | escape }}">
   <link rel="stylesheet" href="{{ '/css/jemdoc.css' | relative_url }}">
-  <link rel="stylesheet" href="{{ '/css/papers.css' | relative_url }}?v=20260831-1">
+  <link rel="stylesheet" href="{{ '/css/papers.css' | relative_url }}?v=20261011-1">
   <script>
     window.MathJax = {
       tex: {
@@ -16,9 +16,12 @@
     };
   </script>
   <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script defer src="{{ '/assets/js/paper-diagram-viewer.js' | relative_url }}?v=20261011-1"></script>
   <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'strict' });
+    mermaid.initialize({ startOnLoad: false, theme: 'neutral', securityLevel: 'strict' });
+    await mermaid.run({ querySelector: '.mermaid' });
+    window.initializePaperDiagramViewer?.();
   </script>
 </head>
 <body class="paper-body">
